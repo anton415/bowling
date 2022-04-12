@@ -23,10 +23,16 @@ export class Bowling {
             // Add to score all knock out pins after two throws.
             score += firstThrow + secondThrow;
 
-            // If spare,
+            // If spare or strike
             // then increase the score by the number of pins knock out in next throw.
-            if (firstThrow + secondThrow === 10) {
+            if (firstThrow + secondThrow === 10 || firstThrow === 10) {
                 score += this.throws[throwIndex + 2];
+            }
+
+            // If strike
+            // then the frame ends.
+            if (firstThrow === 10) {
+                throwIndex--;
             }
         }
 
