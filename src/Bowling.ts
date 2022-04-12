@@ -15,27 +15,35 @@ export class Bowling {
     public getScore(): number {
         let score: number = 0;
         
-        for (let frameIndex = 0, throwIndex = 0; frameIndex < 10; frameIndex++, throwIndex += 2) {
-            // Number of knock out pins in first throw.
-            let firstThrow: number = this.throws[throwIndex];
-            // Number of knock out pins in second throw.
-            let secondThrow: number = this.throws[throwIndex + 1];
+        for (let frameIndex = 0, throwIndex = 0; frameIndex < 10; frameIndex++) {
             // Add to score all knock out pins after two throws.
-            score += firstThrow + secondThrow;
+            score += this.throws[throwIndex] + this.throws[throwIndex + 1];
 
             // If spare or strike
             // then increase the score by the number of pins knock out in next throw.
-            if (firstThrow + secondThrow === 10 || firstThrow === 10) {
+            if (this.isSpare(throwIndex) || this.isStrike(throwIndex)) {
                 score += this.throws[throwIndex + 2];
             }
 
             // If strike
-            // then the frame ends.
-            if (firstThrow === 10) {
-                throwIndex--;
+            // then only one throw in the frame.
+            if (this.isStrike(throwIndex)) {
+                throwIndex++;
+            } else { // else player have two throw in frame.
+                throwIndex += 2;
             }
         }
 
         return score;
+    }
+
+    // Is spare?
+    private isSpare(throwIndex: number): boolean {
+        return this.throws[throwIndex] + this.throws[throwIndex + 1] === 10;
+    }
+
+    // Is strike?
+    private isStrike(throwIndex: number): boolean {
+        return this.throws[throwIndex] === 10;
     }
 }
