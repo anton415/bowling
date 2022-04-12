@@ -50,4 +50,14 @@ describe("Bowling", () => {
         // After spare, we have 10 score.
         expect(bowling.getScore()).toBe(10);
     });
+
+    // when we knock out spare and three pins, in every throws
+    // then we have 10 score.
+    it("spare and three pins, in every throws", () => {
+        addThrows(5, 2);
+        addThrows(3, 18);
+        // After spare, we have score: 10 + 3 + 18 * 3 = 67.
+        // spare + bonus + three in every throws.
+        expect(bowling.getScore()).toBe(67);
+    });
 });
