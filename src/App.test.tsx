@@ -1,12 +1,43 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import {Bowling} from './Bowling';
+import {Bowling} from './logic/Bowling';
+import {Frame} from './logic/Frame';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe("Frame", () => {
+    let frame: Frame;
+
+    beforeEach(() => {
+        frame = new Frame();
+    });
+
+    it("when one throw get five pins", () => {
+        frame.addThrow(5);
+        expect(frame.getFrameScore()).toBe(5);
+    });
+
+    it("when two throw get ten pins", () => {
+        frame.addThrow(5);
+        frame.addThrow(5);
+        expect(frame.getFrameScore()).toBe(10);
+    });
+
+    it("when two throw get spare", () => {
+        frame.addThrow(5);
+        frame.addThrow(5);
+        expect(frame.isSpare).toBeTruthy();
+    });
+
+    it("when one throw get strike", () => {
+        frame.addThrow(10);
+        expect(frame.isStrike).toBeTruthy();
+    });
+
+    it("when one throw get ten pins and three pins as bonus", () => {
+        frame.addThrow(10);
+        frame.addBonusScore(3);
+        expect(frame.getFrameScore()).toBe(13);
+    });
 });
 
 describe("Bowling", () => {
@@ -17,74 +48,102 @@ describe("Bowling", () => {
         bowling = new Bowling();
     });
 
-    // Add throws function.
-    // pins - number of pins we knock out.
-    // times - number of times throw will be repeated.
-    let addThrows = (pins: number, times: number) => {
-        for (let i = 0; i < times; i++) {
-            bowling.addThrow(pins);
-        }
-    };
+    it("two throw, two pin", () => {
+        bowling.addThrow(1);
+        bowling.addThrow(1);
+        expect(bowling.getScore()).toBe(2);
+    });
 
-    // when we didn't knock out any pins, after 20 attempts
-    // then we have 0 score.
-    it("didn't knock out any pins", () => {
-        addThrows(0, 20);
-        // After 20 throws, we have 0 score.
+    it("two throw, zero pin", () => {
+        bowling.addThrow(0);
+        bowling.addThrow(0);
         expect(bowling.getScore()).toBe(0);
     });
 
-    // when we knock out three pins, in every throws
-    // then we have 60 score.
-    it("three pins, in every throws", () => {
-        addThrows(3, 20);
-        // After 20 throws, we have 60 score.
-        expect(bowling.getScore()).toBe(60);
+    it("three pins, in two throws", () => {
+        bowling.addThrow(1);
+        bowling.addThrow(2);
+        expect(bowling.getScore()).toBe(3);
     });
 
     // when we knock out spare
     // then we have 10 score.
     it("spare", () => {
-        addThrows(5, 2);
-        addThrows(0, 18);
-        // After spare, we have 10 score.
+        bowling.addThrow(8);
+        bowling.addThrow(2);
         expect(bowling.getScore()).toBe(10);
     });
 
-    // when we knock out spare and three pins, in every throws
-    // then we have 67 score (spare + bonus + three in every throws).
-    it("spare and three pins, in every throws", () => {
-        addThrows(5, 2);
-        addThrows(3, 18);
-        // After spare, we have score: 10 + 3 + 18 * 3 = 67.
-        // spare + bonus + three in every throws.
-        expect(bowling.getScore()).toBe(67);
+    it("spare get bonus score", () => {
+        bowling.addThrow(8);
+        bowling.addThrow(2);
+        bowling.addThrow(3);
+        expect(bowling.frames[0].getFrameScore()).toBe(13);
+    });
+
+    // when we knock out spare and three pins, in next frame
+    // then we have 19 score (spare + bonus + six in next frame).
+    it("spare and 6 pins, in second frame + bonus", () => {
+        bowling.addThrow(8);
+        bowling.addThrow(2);
+        bowling.addThrow(3);
+        bowling.addThrow(3);
+        // After spare, we have score: 10 + 3 + 3 + 3 = 19.
+        expect(bowling.getScore()).toBe(19);
     });
 
     // when we knock out strike
     // then we have 10 score.
     it("strike", () => {
-        addThrows(10, 1);
-        addThrows(0, 18);
+        bowling.addThrow(10);
         // After strike, we have 10 score.
         expect(bowling.getScore()).toBe(10);
     });
 
-    // when we knock out strike and three pins, in every throws
-    // then we have 70 score.
+    // when we knock out strike and three pins, in next frame
+    // then we have 22 score.
     it("strike and three pins, in every throws", () => {
-        addThrows(10, 1);
-        addThrows(3, 18);
-        // After strike, we have score: 10 + 3 + 3 + 18 * 3 = 70.
+        bowling.addThrow(10);
+        bowling.addThrow(3);
+        bowling.addThrow(3);
+        // After strike, we have score: 10 + 3 + 3 + 6 (as bonus) = 70.
         // spare + bonus + bonus + three in every throws.
-        expect(bowling.getScore()).toBe(70);
+        expect(bowling.getScore()).toBe(22);
     });
 
-    // when we knock out strike, in every throws
-    // then we have 300 score.
-    it("strike, in every throws", () => {
-        // 12 throws, because player may throw two more balls to complete the score of the strike.
-        addThrows(10, 12);
+    it("two strike is 30 score", () => {
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        expect(bowling.getScore()).toBe(30);
+    });
+
+    it("three strike is 60 score", () => {
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        expect(bowling.getScore()).toBe(60);
+    });
+
+    it("four strike is 90 score", () => {
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        expect(bowling.getScore()).toBe(90);
+    });
+
+    it("all throws strike", () => {
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
+        bowling.addThrow(10);
         expect(bowling.getScore()).toBe(300);
     });
 });
