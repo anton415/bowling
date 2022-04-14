@@ -1,6 +1,8 @@
 # bowling
 ##App that takes score of a bowling game
 
+[Live version for play](https://serdyuchenko.com/bowling/)
+
 ### Main Requirements
 The App should be written using [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/). 
 
