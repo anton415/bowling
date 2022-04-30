@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { Bowling } from "../logic/Bowling";
 import {Frame} from '../logic/Frame';
-import Table from '../view/Table';
+import BowlingTable from '../view/BowlingTable';
+import { Typography, Button, TextField, FormControl } from '@mui/material';
 
 export default class BowlingGame extends Component<{name: string}, {
     bowling: Bowling,
@@ -64,7 +65,7 @@ export default class BowlingGame extends Component<{name: string}, {
     this.setState({
         bowling: new Bowling(),
         score: 0,
-        throwValue: '',
+        throwValue: "0",
         pinsLeft: 10
     });
   }
@@ -82,17 +83,35 @@ export default class BowlingGame extends Component<{name: string}, {
   render () {
     return (
       <div className='BowlingGame'>
-        <h1>{this.props.name}</h1>
+        <Typography variant="h4">
+          {this.props.name}
+        </Typography>
+
+        <br/>
 
         <form onSubmit={this.handleSubmit}>
-          <input type="number" min={0} max={this.state.pinsLeft} value={this.state.throwValue} onChange={this.handleChange} />
-          <input type="submit" value="Throw" />
+          <FormControl onSubmit={this.handleSubmit}>
+              <TextField
+                type="number"
+                InputProps={{ inputProps: { min: 0, max: this.state.pinsLeft } }}
+                size="small"
+                value={this.state.throwValue}
+                defaultValue="0"
+                onChange={this.handleChange}
+              />
+              <Button size="medium" variant="outlined" type="submit">Throw</Button>
+          </FormControl>
         </form>
 
-        <Table frames={this.state.bowling.frames}/>
+        <BowlingTable frames={this.state.bowling.frames}/>
 
-        <h1>Total score: {this.state.score}</h1>
-        <button onClick={this.newGame}>New game</button>
+        <Typography component="p" variant="h4">
+          {this.state.score}
+        </Typography>
+        <Typography color="text.secondary" sx={{ flex: 1 }}>
+          Total score
+        </Typography>
+        <Button variant="contained" onClick={this.newGame}>New game</Button>
       </div>
     )
   }
