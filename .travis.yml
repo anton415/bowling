@@ -1,0 +1,19 @@
+env:
+  global:
+    - CODECOV_TOKEN='71b17870-6750-44f2-a205-12dca071fca4'
+
+language: node_js
+node_js:
+  - 17
+
+sudo: false
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    recipients:
+      - anton415@gmail.com
+    on_success: never # default: change
+    on_failure: always # default: always
