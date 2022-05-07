@@ -3,7 +3,7 @@
 [![Build Status](https://app.travis-ci.com/anton415/bowling.svg?branch=main)](https://app.travis-ci.com/anton415/bowling)
 [![codecov](https://codecov.io/gh/anton415/bowling/branch/main/graph/badge.svg?token=Z1DHV78REX)](https://codecov.io/gh/anton415/bowling)
 
-##App that takes score of a bowling game
+## App that takes score of a bowling game
 
 [Live version for play](https://serdyuchenko.com/bowling/)
 
