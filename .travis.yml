@@ -8,8 +8,10 @@ node_js:
 
 sudo: false
 
+scripts:
+  - npm install codecov -g
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
 
 notifications:
   email:
